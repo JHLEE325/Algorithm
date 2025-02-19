@@ -1,0 +1,17 @@
+import java.util.Scanner;
+
+public class Main {
+	public static void main(String[] args) throws Exception {
+		Scanner sc = new Scanner(System.in);
+		int a=sc.nextInt();
+		int b=sc.nextInt();
+		int c=sc.nextInt();
+		System.out.println(a+b-c);
+		String str=Integer.toString(a);
+		str=str+Integer.toString(b);
+		int num = Integer.parseInt(str);
+		System.out.println(num-c);
+		
+		sc.close();
+	}
+}
