@@ -10,19 +10,16 @@ public class Main {
 
 		int n = Integer.parseInt(br.readLine());
 
-		long[] arr = new long[n + 1];
+		long[] arr = new long[1001];
 
 		arr[1] = 1;
+		arr[2] = 3;
 
-		for (int i = 2; i <= n; i++) {
-			if (i % 2 == 0) {
-				arr[i] = (arr[i - 1] * 2 + 1)%10007;
-			} else {
-				arr[i] = (arr[i - 1] * 2 - 1)%10007;
-			}
+		for (int i = 3; i <= n; i++) {
+			arr[i] = (arr[i - 1] + 2 * arr[i - 2]) % 10007;
 		}
 
-		System.out.println(arr[n]%10007);
+		System.out.println(arr[n]);
 	}
 
 }
