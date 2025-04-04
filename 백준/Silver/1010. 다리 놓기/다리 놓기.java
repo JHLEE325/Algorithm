@@ -1,41 +1,36 @@
-import java.io.FileInputStream;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
+    static int[][] dp = new int[31][31];
 
-	static int[][] chk = new int[30][30];
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+        StringBuilder sb = new StringBuilder();
+        
+        int T = Integer.parseInt(br.readLine());
+        
+        for (int i = 0; i <= 30; i++) {
+            dp[i][0] = 1;
+            dp[i][i] = 1;
+        }
 
-	public static void main(String[] args) throws Exception {
-		//System.setIn(new FileInputStream("1010.txt"));
-		Scanner sc = new Scanner(System.in);
-		int T = sc.nextInt();
-		//System.out.println(T);
-		
-		for(int test = 0; test<T; test++) {
-			int result = 0;
-			int n = sc.nextInt();
-			int m = sc.nextInt();
-			
-			if(n==m) {
-				result = 1;
-			}
-			else {
-				result = combination(m,n);
-			}
-			
-			System.out.println(result);
-		}  
-		
-		sc.close();
-	}
-	
-	public static int combination(int m, int n) {
-		if(m == n || n == 0) 
-			return 1;
-		if(chk[m][n]!=0)
-			return chk[m][n];
-		else 
-			return chk[m][n] = combination(m - 1, n - 1) + combination(m - 1, n); 
-	}
-
+        for (int i = 1; i <= 30; i++) {
+            for (int j = 1; j < i; j++) {
+                dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+            }
+        }
+        
+        for(int t=0;t<T;t++) {
+        	st = new StringTokenizer(br.readLine());
+        	int n = Integer.parseInt(st.nextToken());
+        	int m = Integer.parseInt(st.nextToken());
+        	
+        	sb.append(dp[m][n]+"\n");
+        }
+        
+        System.out.println(sb);
+    }
 }
