@@ -1,79 +1,70 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.PriorityQueue;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
+    static int N, M;
+    static int[][] map;
+    static int[][] wallCnt;
 
-	static class Node implements Comparable<Node> {
-		int y, x, weight;
+    // 상 하 좌 우
+    static int[] dx = {-1, 1, 0, 0};
+    static int[] dy = {0, 0, -1, 1};
+    
+    public static void main(String[] args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        
+        M = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
 
-		public Node(int y, int x, int weight) {
-			super();
-			this.y = y;
-			this.x = x;
-			this.weight = weight;
-		}
+        map = new int[N][M];
+        wallCnt = new int[N][M];
+        
+        for (int i=0; i<N; i++) {
+            String string = br.readLine();
+            for (int j=0; j<M; j++) {
+                map[i][j] = string.charAt(j)-'0';
+                wallCnt[i][j] = Integer.MAX_VALUE;
+            }
+        }   
+        bfs();
+        System.out.println(wallCnt[N-1][M-1]);
+    }
 
-		@Override
-		public int compareTo(Main.Node o) {
-			// TODO Auto-generated method stub
-			return this.weight - o.weight;
-		}
+    static void bfs(){
+        Deque<int[]> d = new ArrayDeque<>();
+        d.add(new int[]{0, 0});
+        wallCnt[0][0] = 0;
 
-	}
+        while (!d.isEmpty()){
+            int[] current = d.poll();
+            int x = current[0];
+            int y = current[1];
 
-	static int[][] map, cmap;
-	static boolean[][] visited;
-	static int n, m;
-	static int[][] dir = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+            for (int i=0; i<4; i++){
+                int nx = x + dx[i];
+                int ny = y + dy[i];
 
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
+                if (!isOK(nx, ny)) continue;
 
-			m = Integer.parseInt(st.nextToken());
-			n = Integer.parseInt(st.nextToken());
+                // 이번 경로로 (nx, ny)까지 도달했을 때의 벽의 개수
+                int wall = wallCnt[x][y] + map[nx][ny];
 
-			map = new int[n][m];
-			cmap = new int[n][m];
-			visited = new boolean[n][m];
+                // 그 개수가 기존 (nx, ny)까지의 벽의 개수보다 작다면
+                if (wall < wallCnt[nx][ny]){
+                    wallCnt[nx][ny] = wall; // 최솟값이므로 갱신
+                    if (map[nx][ny] == 0){
+                        d.addFirst(new int[]{nx, ny});
+                    } else {
+                        d.addLast(new int[]{nx, ny});
+                    } // map[nx][ny]가 0이면 deque의 앞에, 1이면 뒤에 삽입하여 55~59 Line 연산 횟수 줄임
+                }
+            }
+        }
+    }
 
-			for (int i = 0; i < n; i++) {
-				String str = br.readLine();
-				for (int j = 0; j < m; j++) {
-					map[i][j] = str.charAt(j) - '0';
-					cmap[i][j] = Integer.MAX_VALUE/2;
-				}
-			}
-
-			dijkstra();
-			
-			System.out.println(cmap[n-1][m-1]);
-	}
-
-	static void dijkstra() {
-		cmap[0][0] = map[0][0];
-		PriorityQueue<Node> pq = new PriorityQueue<>();
-		pq.add(new Node(0, 0, cmap[0][0]));
-		while (!pq.isEmpty()) {
-			Node cur = pq.poll();
-			if (visited[cur.y][cur.x])
-				continue;
-			visited[cur.y][cur.x] = true;
-
-			for (int i = 0; i < 4; i++) {
-				int dy = cur.y + dir[i][0];
-				int dx = cur.x + dir[i][1];
-
-				if (dy >= 0 && dy < n && dx >= 0 && dx < m) {
-					if (cmap[dy][dx] > cmap[cur.y][cur.x] + map[dy][dx]) {
-						cmap[dy][dx] = cmap[cur.y][cur.x] + map[dy][dx];
-						pq.add(new Node(dy, dx, cmap[dy][dx]));
-					}
-				}
-			}
-		}
-	}
-
+    static boolean isOK(int x, int y){
+        if (x<0 || y<0 || x>=N || y>=M) return false;
+        return true;
+    }
 }
