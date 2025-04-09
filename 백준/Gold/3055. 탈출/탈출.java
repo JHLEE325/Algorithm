@@ -45,7 +45,7 @@ public class Main {
 	}
 
 	static void bfs() {
-		int count = 0;
+		int count = 1;
 		while (!dochi.isEmpty()) {
 			int wsize = water.size();
 			for (int s = 0; s < wsize; s++) {
@@ -62,15 +62,15 @@ public class Main {
 			int dsize = dochi.size();
 			for (int s = 0; s < dsize; s++) {
 				int[] cur = dochi.poll();
-				if (map[cur[0]][cur[1]] == 9) {
-					System.out.println(count);
-					return;
-				}
 				for (int d = 0; d < 4; d++) {
 					int dy = cur[0] + dir[d][0];
 					int dx = cur[1] + dir[d][1];
 					if (dy >= 0 && dy < r && dx >= 0 && dx < c && !visited[dy][dx]
 							&& (map[dy][dx] == 0 || map[dy][dx] == 9)) {
+						if (map[dy][dx] == 9) {
+							System.out.println(count);
+							return;
+						}
 						dochi.add(new int[] { dy, dx });
 						visited[dy][dx] = true;
 					}
